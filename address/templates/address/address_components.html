@@ -1,0 +1,43 @@
+<div id="{{ name }}_components" class="address-components" style="display:none">
+    <table id="address">
+      <tr>
+        <td class="label">Street address</td>
+        <td class="slimField">
+            <input class="field" id="street_number" name="{{ name }}_street_number" data-geo="street_number" disabled="true"></input>
+        </td>
+        <td class="wideField" colspan="2">
+            <input class="field" id="route" name="{{ name }}_route" data-geo="route" disabled="true"></input>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">City</td>
+        <!-- Note: Selection of address components in this example is typical.
+             You may need to adjust it for the locations relevant to your app. See
+             https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform
+        -->
+        <td class="wideField" colspan="3">
+            <input class="field" id="locality" name="{{ name }}_locality" data-geo="locality" disabled="true"></input></td>
+      </tr>
+      <tr>
+        <td class="label">State</td>
+        <td class="slimField">
+            <input class="field" id="administrative_area_level_1_short" name="{{ name }}_state_code"
+                   data-geo="administrative_area_level_1_short" disabled="true">
+            </input>
+        </td>
+        <td class="label">Zip code</td>
+        <td class="wideField">
+            <input class="field" id="postal_code" name="{{ name }}_postal_code" data-geo="postal_code" disabled="true"></input>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Country</td>
+        <td class="wideField" colspan="3">
+            <input class="field" id="country" name="{{ name }}_country" data-geo="country" disabled="true"></input>
+        </td>
+      </tr>
+    </table>
+    <input type="hidden" name="{{ name }}_latitude" data-geo="lat" value="">
+    <input type="hidden" name="{{ name }}_longitude" data-geo="lng" value="">
+</div>
+<div id="map"></div>
