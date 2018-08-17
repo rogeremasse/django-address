@@ -4,7 +4,6 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.template.loader import get_template
-from django.template.loader import render_to_string
 
 from .models import Address
 
@@ -77,7 +76,6 @@ class AddressWidget(forms.TextInput):
         # For each individual component, and a visible field for the raw
         # input. Begin by generating the raw input.
         elems = [super(AddressWidget, self).render(name, ad.get('formatted', None), attrs, **kwargs)]
-
         if self.show_address_components:
             # add a table containing the address components
             context = {"name": name, "components": dict(self.components)}

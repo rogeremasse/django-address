@@ -5,8 +5,19 @@ $(function () {
         var fmtd = $('input[name="' + self.attr('name') + '_formatted"]');
         self.geocomplete({
             details: cmps,
-            detailsAttribute: 'data-geo'
-        }).change(function () {
+            detailsAttribute: 'data-geo',
+            autoselect: false
+        })
+        .bind("geocode:result", function(event, result) {
+            console.log("Result: " + result.formatted_address);
+        })
+        .bind("geocode:error", function(event, status){ 
+            console.log("ERROR: " + status);
+        })
+        .bind("geocode:multiple", function(event, results) {
+            console.log("Multiple: " + results.length + " results found");
+        })
+        .change(function () {
             if (self.val() != fmtd.val()) {
                 var cmp_names = [
                     'country',
@@ -26,6 +37,7 @@ $(function () {
                     $('input[name="' + self.attr('name') + '_' + cmp_names[ii] + '"]').val('');
                 }
             }
+            $(cmps).show();
         });
     });
 });
