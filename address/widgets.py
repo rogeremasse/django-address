@@ -13,7 +13,6 @@ if sys.version > '3':
 
 USE_DJANGO_JQUERY = getattr(settings, 'USE_DJANGO_JQUERY', False)
 JQUERY_URL = getattr(settings, 'JQUERY_URL', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
-ADDRESS_JS =  getattr(settings, 'ADDRESS_JS', 'address/js/address.js')
 
 class AddressWidget(forms.TextInput):
     components = [('country', 'country'), ('country_code', 'country_short'),
@@ -30,7 +29,7 @@ class AddressWidget(forms.TextInput):
         js = [
             'https://maps.googleapis.com/maps/api/js?libraries=places&key=%s' % settings.GOOGLE_API_KEY,
             'js/jquery.geocomplete.min.js',
-            ADDRESS_JS,
+            'address/js/address.js',
         ]
 
         if JQUERY_URL:
