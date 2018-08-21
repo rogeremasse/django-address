@@ -7,7 +7,9 @@ $(function () {
             details: cmps,
             detailsAttribute: 'data-geo',
             autoselect: false,
-            types: ["geocode", "establishment"]
+            types: ["geocode", "establishment"],
+            blur: true,
+            map: ".data-geo-map"
         })
         .bind("geocode:result", function(event, result) {
             console.log("Result: " + result.formatted_address);
