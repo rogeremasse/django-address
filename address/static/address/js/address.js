@@ -8,8 +8,6 @@ $(function () {
             detailsAttribute: 'data-geo',
             autoselect: false,
             types: ["geocode", "establishment"],
-            blur: true,
-            restoreValueAfterBlur: true,
             map: ".data-geo-map"
         })
         .bind("geocode:result", function(event, result) {
