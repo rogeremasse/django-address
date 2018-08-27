@@ -183,9 +183,11 @@
         types: this.options.types,
         bounds: this.options.bounds === true ? null : this.options.bounds,
         componentRestrictions: this.options.componentRestrictions,
-        strictBounds: this.options.strictBounds
+        strictBounds: this.options.strictBounds,
+        types: ['geocode', 'establishment']
       };
 
+	  console.log('initGeocoder - bounds ' + this.options.bounds);
       if (this.options.country){
         options.componentRestrictions = {country: this.options.country};
       }
@@ -350,7 +352,6 @@
       if (this.options.country){
         request.region = this.options.country;
       }
-
       this.geocoder.geocode(request, $.proxy(this.handleGeocode, this));
     },
 
@@ -391,6 +392,7 @@
     handleGeocode: function(results, status){
       if (status === google.maps.GeocoderStatus.OK) {
         var result = results[0];
+		console.log('handleGeocode, len results ' + results.length);
         this.$input.val(result.formatted_address);
         this.update(result);
 
@@ -479,6 +481,7 @@
         lng: geometry.location.lng()
       });
 
+	  // console.log('fillDetails for "' + data.formatted_address + '", location_type "' + data.location_type + '"');
       // Set the values for all details.
       $.each(this.details, $.proxy(function(key, $detail){
         var value = data[key];
