@@ -9,7 +9,7 @@ $(function () {
             autoselect: false,
             blur: true,
             map: ".data-geo-map",
-            bounds: false,
+            bounds: null,
             geocodeAfterResult: false,
             restoreValueAfterBlur: false,
         })
