@@ -12,10 +12,10 @@ $(function () {
             bounds: null,
             geocodeAfterResult: false,
             restoreValueAfterBlur: false,
+            types: ['geocode', 'establishment']
         })
         .bind("geocode:result", function(event, result) {
             console.log("single result: " + result.formatted_address);
-            console.log(dir(result));
             self.val(result.formatted_address);
         })
         .bind("geocode:error", function(event, status){ 

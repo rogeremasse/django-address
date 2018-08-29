@@ -1,5 +1,19 @@
 # django-address
 
+This is a slightly modified version of https://github.com/furious-luke/django-address. I've maintained the original attribution
+but now maintain my own copy https://github.com/rogeremasse/django-address
+
+My versioning adds beta tags to the last released version from Furious Luke. e.g. 0.2.0b8
+
+The bulk of the changes come from changes I've applied to the no-longer-maintained jquery.geocomplete library https://github.com/ubilabs/geocomplete.
+I've maintained the original attribution for this as well, but now maintain my own copy https://github.com/rogeremasse/geocomplete
+
+For starters, I've applied these pull requests:
+
+* Fix: copy paste the address and press enter on search-box field is not working #291 https://github.com/ubilabs/geocomplete/pull/291
+* Select first result on blur #340 https://github.com/ubilabs/geocomplete/pull/340
+* Fix select first result #339 https://github.com/ubilabs/geocomplete/pull/339
+
 ## Disclaimer
 
 These instructions are a little shabby, I haven't had a whole lot of time to

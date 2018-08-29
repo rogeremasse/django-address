@@ -183,11 +183,10 @@
         types: this.options.types,
         bounds: this.options.bounds === true ? null : this.options.bounds,
         componentRestrictions: this.options.componentRestrictions,
-        strictBounds: this.options.strictBounds,
-        types: ['geocode', 'establishment']
+        strictBounds: this.options.strictBounds
       };
 
-	  console.log('initGeocoder - bounds ' + this.options.bounds);
+	  // console.log('initGeocoder - bounds ' + this.options.bounds);
       if (this.options.country){
         options.componentRestrictions = {country: this.options.country};
       }
@@ -247,7 +246,15 @@
           if (this.options.restoreValueAfterBlur === true && this.selected === true) {
             setTimeout($.proxy(this.restoreLastValue, this), 0);
           } else {
-            this.find();
+            // On blur select first result and geocode that.
+            var autoSelection = this.selectFirstResult();
+            if (autoSelection) {
+                console.log('geocoding first result from autoSelection "' + autoSelection + '"');
+                this.find(autoSelection);
+            } else {
+                console.log('geocoding input value "' + this.$input.val() + '"');
+                this.find();
+            }
           }
         }, this));
       }
@@ -334,11 +341,18 @@
       });
     },
 
+    findById: function(placeId){
+      this.geocode({
+        placeId: placeId
+      });
+    },
+
     // Requests details about a given location.
     // Additionally it will bias the requests to the provided bounds.
     geocode: function(request){
       // Don't geocode if the requested address is empty
-      if (!request.address) {
+      // if (!request.address) {
+      if (!request.address && !request.placeId) { 
         return;
       }
       if (this.options.bounds && !request.bounds){
@@ -367,17 +381,30 @@
       }
 
       // Get the first suggestion's text.
-      var $span1 = $(".pac-container:visible .pac-item" + selected + ":first span:nth-child(2)").text();
-      var $span2 = $(".pac-container:visible .pac-item" + selected + ":first span:nth-child(3)").text();
+      // var $span1 = $(".pac-container:visible .pac-item" + selected + ":first span:nth-child(2)").text();
+      // var $span2 = $(".pac-container:visible .pac-item" + selected + ":first span:nth-child(3)").text();
+	  // From https://github.com/ubilabs/geocomplete/pull/339/commits/d76fae7758161e1a5aaaf8ec84c638fdd1c83333
+      var $span1 = $(".pac-container .pac-item" + selected + ":first .pac-item-query").text();
+      var $span2 = $(".pac-container .pac-item" + selected + ":first span:nth-child(3)").text();
 
       // Adds the additional information, if available.
       var firstResult = $span1;
+
       if ($span2) {
-        firstResult += " - " + $span2;
+        // firstResult += " - " + $span2;
+        // From https://github.com/ubilabs/geocomplete/pull/339/commits/dc9b2931421674f0b1a6fa6ab73c87a3ac16ced6
+        firstResult += ", " + $span2;
       }
+      firstResult = firstResult.replace(/USAUSA/g, "USA");
 
-      this.$input.val(firstResult);
-
+      // this.$input.val(firstResult);
+      // From https://github.com/ubilabs/geocomplete/pull/291/commits/8dc2462709dad2a2e9190124bf1a2fb71da7a77d
+      if(!!firstResult) {
+         this.$input.val(firstResult);
+      } else {
+         firstResult = this.$input.val();
+      }
+      console.log('selectFirstResult, firstResult "' + firstResult + '"');
       return firstResult;
     },
 
@@ -392,8 +419,7 @@
     handleGeocode: function(results, status){
       if (status === google.maps.GeocoderStatus.OK) {
         var result = results[0];
-		console.log('handleGeocode, len results ' + results.length);
-        this.$input.val(result.formatted_address);
+        // this.$input.val(result.formatted_address);
         this.update(result);
 
         if (results.length > 1){
@@ -549,12 +575,35 @@
         if (this.options.autoselect) {
           // Automatically selects the highlighted item or the first item from the
           // suggestions list.
-          var autoSelection = this.selectFirstResult();
-          this.find(autoSelection);
+          // var autoSelection = this.selectFirstResult();
+          // this.find(autoSelection);
+          // From https://github.com/ubilabs/geocomplete/pull/291/commits/8dc2462709dad2a2e9190124bf1a2fb71da7a77d
+          var autoCompleteService = this.getAutoCompleteService();
+            autoCompleteService.getPlacePredictions({
+              input: this.$input.val().split(',')[0]
+            }, $.proxy(this.placePredictionChange, this))
+          } else {
+            // Use the input text if it already gives geometry.
+            this.update(place);
+          }
+        }
+      },
+      placePredictionChange: function(result, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          if(result.length > 0) {
+            this.findById(result[0].place_id);
         }
       } else {
         // Use the input text if it already gives geometry.
-        this.update(place);
+        // this.update(place);
+        this.trigger("geocode:error", status);
+      }
+    },
+    getAutoCompleteService: function() {
+      if (!this.autocompleteService) {
+        return this.autocompleteService = new google.maps.places.AutocompleteService();
+      } else {
+        return this.autocompleteService;
       }
     }
   });
